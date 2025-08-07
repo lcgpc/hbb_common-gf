@@ -66,11 +66,11 @@ lazy_static::lazy_static! {
         let mut map = HashMap::new();
         map.insert("direct-server".to_owned(), "Y".to_owned());
                 // 添加以下行來預設開啟完全存取權限
-        map.insert("access-mode".to_owned(), "full".to_owned());
-        map.insert("enable-keyboard".to_owned(), "Y".to_owned());
-        map.insert("enable-clipboard".to_owned(), "Y".to_owned());
-        map.insert("enable-file-transfer".to_owned(), "Y".to_owned());
-        map.insert("temporary-password-length".to_owned(), "8".to_owned());
+        //map.insert("access-mode".to_owned(), "full".to_owned());
+        //map.insert("enable-keyboard".to_owned(), "Y".to_owned());
+        //map.insert("enable-clipboard".to_owned(), "Y".to_owned());
+        //map.insert("enable-file-transfer".to_owned(), "Y".to_owned());
+        //map.insert("temporary-password-length".to_owned(), "8".to_owned());
         RwLock::new(map)
     };
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
@@ -2398,7 +2398,8 @@ pub fn is_disable_installation() -> bool {
 // flutter: flutter/lib/common.dart -> option2bool()
 // sciter: Does not have the function, but it should be kept the same.
 pub fn option2bool(option: &str, value: &str) -> bool {
-    if  option == "allow-numeric-one-time-password" {
+    if  option == "allow-numeric-one-time-password" ||
+        option == "allow-remote-config-modification" {
         value != "N"
     } else if option.starts_with("enable-") {
         value != "N"
