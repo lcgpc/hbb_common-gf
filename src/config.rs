@@ -70,14 +70,29 @@ lazy_static::lazy_static! {
         map.insert("enable-keyboard".to_owned(), "Y".to_owned());
         map.insert("enable-clipboard".to_owned(), "Y".to_owned());
         map.insert("enable-file-transfer".to_owned(), "Y".to_owned());
+        map.insert("temporary-password-length".to_owned(), "8".to_owned());
         RwLock::new(map)
     };
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = {
+        let mut map = HashMap::new();
+        map.insert("enable-check-update".to_owned(), "N".to_owned());
+        map.insert("enable-udp-punch".to_owned(), "Y".to_owned());
+        // 添加到這裡作為本地預設設定
+        //map.insert("temporary-password-length".to_owned(), "8".to_owned());
+        //map.insert("allow-numeric-one-time-password".to_owned(), "Y".to_owned());
+        RwLock::new(map)
+    };
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
+        let mut map = HashMap::new();
+        //map.insert("disable-account".to_owned(), "Y".to_owned());
+        //map.insert("hide-network-settings".to_owned(), "Y".to_owned());
+        map.insert("hide-remote-printer-settings".to_owned(), "Y".to_owned());
+        RwLock::new(map)
+    };
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
 
@@ -2383,13 +2398,13 @@ pub fn is_disable_installation() -> bool {
 // flutter: flutter/lib/common.dart -> option2bool()
 // sciter: Does not have the function, but it should be kept the same.
 pub fn option2bool(option: &str, value: &str) -> bool {
-    if option.starts_with("enable-") {
+    if  option == "allow-numeric-one-time-password" {
         value != "N"
-    } else if option.starts_with("allow-")
-        || option == "stop-service"
-        || option == keys::OPTION_DIRECT_SERVER
-        || option == "force-always-relay"
-    {
+    } else if option.starts_with("enable-") {
+        value != "N"
+    } else if option.starts_with("allow-") ||
+              option == "stop-service" ||
+              option == "force-always-relay" {
         value == "Y"
     } else {
         value != "N"
